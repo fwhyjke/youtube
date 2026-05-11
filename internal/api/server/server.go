@@ -40,6 +40,7 @@ func (s *HTTPServer) Run(ctx context.Context) error {
 	go func() {
 		defer close(ch)
 
+		fmt.Println("start HTTP server " + s.config.Addr)
 		err := server.ListenAndServe()
 
 		if !errors.Is(err, http.ErrServerClosed) {

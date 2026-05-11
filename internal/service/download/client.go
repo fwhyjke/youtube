@@ -1,8 +1,9 @@
-package service
+package download
 
 import (
 	"context"
 
+	"github.com/fwhyjke/youtube/internal/domain"
 	"github.com/fwhyjke/youtube/internal/service"
 	"github.com/kkdai/youtube/v2"
 )
@@ -17,8 +18,8 @@ func NewClient() *Client {
 	}
 }
 
-func (c Client) AudioFormats(ctx context.Context, url string) ([]service.MediaFormat, error) {
-	aFormats := []service.MediaFormat{}
+func (c Client) AudioFormats(ctx context.Context, url string) ([]domain.MediaFormat, error) {
+	aFormats := []domain.MediaFormat{}
 
 	meta, err := c.client.GetVideoContext(ctx, url)
 	if err != nil {
@@ -26,7 +27,7 @@ func (c Client) AudioFormats(ctx context.Context, url string) ([]service.MediaFo
 	}
 
 	for _, format := range meta.Formats.Type("audio/mp4") {
-		aFormats = append(aFormats, service.MediaFormat{
+		aFormats = append(aFormats, domain.MediaFormat{
 			ItagNo:   format.ItagNo,
 			MimeType: format.MimeType,
 
@@ -40,8 +41,8 @@ func (c Client) AudioFormats(ctx context.Context, url string) ([]service.MediaFo
 	return aFormats, err
 }
 
-func (c Client) VideoFormats(ctx context.Context, url string) ([]service.MediaFormat, error) {
-	vFormats := []service.MediaFormat{}
+func (c Client) VideoFormats(ctx context.Context, url string) ([]domain.MediaFormat, error) {
+	vFormats := []domain.MediaFormat{}
 
 	meta, err := c.client.GetVideoContext(ctx, url)
 	if err != nil {
@@ -49,7 +50,7 @@ func (c Client) VideoFormats(ctx context.Context, url string) ([]service.MediaFo
 	}
 
 	for _, format := range meta.Formats.Type("video/mp4") {
-		vFormats = append(vFormats, service.MediaFormat{
+		vFormats = append(vFormats, domain.MediaFormat{
 			ItagNo:   format.ItagNo,
 			MimeType: format.MimeType,
 

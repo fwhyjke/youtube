@@ -5,7 +5,7 @@ import (
 )
 
 type Converter interface {
-	buildVandA(context.Context, StreamWithCodec, StreamWithCodec) (string, error)
-	buildOnlyV(context.Context, StreamWithCodec) (string, error)
-	buildOnlyA(context.Context, StreamWithCodec) (string, error)
+	BuildVandA(context.Context, StreamWithCodec, StreamWithCodec) (string, error)
+	BuildOnlyV(context.Context, StreamWithCodec) (string, error)
+	BuildOnlyA(context.Context, StreamWithCodec) (string, error)
 }

@@ -17,7 +17,7 @@ func (h *YoutubeHTTPHandler) GetVideoFormats(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	formats, err := h.ytService.getVideoFormats(r.Context(), url)
+	formats, err := h.ytService.GetVideoFormats(r.Context(), url)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -42,7 +42,7 @@ func (h *YoutubeHTTPHandler) GetAudioFormats(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	formats, err := h.ytService.getAudioFormats(r.Context(), url)
+	formats, err := h.ytService.GetAudioFormats(r.Context(), url)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

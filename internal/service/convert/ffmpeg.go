@@ -1,4 +1,4 @@
-package service
+package convert
 
 import (
 	"context"
@@ -16,6 +16,13 @@ import (
 type FFmpegStore struct {
 	tmpDir    string
 	resultDir string
+}
+
+func NewFFmpegStore(temp, out string) *FFmpegStore {
+	return &FFmpegStore{
+		tmpDir:    temp,
+		resultDir: out,
+	}
 }
 
 func (f *FFmpegStore) pullStream(ctx context.Context, stream io.ReadCloser) (string, error) {
@@ -37,7 +44,7 @@ func (f *FFmpegStore) pullStream(ctx context.Context, stream io.ReadCloser) (str
 	return path, err
 }
 
-func (f *FFmpegStore) buildOnlyA(ctx context.Context, stream service.StreamWithCodec) (string, error) {
+func (f *FFmpegStore) BuildOnlyA(ctx context.Context, stream service.StreamWithCodec) (string, error) {
 	iPath, err := f.pullStream(ctx, stream.Stream)
 	if err != nil {
 		return "", err
@@ -62,7 +69,7 @@ func (f *FFmpegStore) buildOnlyA(ctx context.Context, stream service.StreamWithC
 	return outPath, err
 }
 
-func (f *FFmpegStore) buildOnlyV(ctx context.Context, stream service.StreamWithCodec) (string, error) {
+func (f *FFmpegStore) BuildOnlyV(ctx context.Context, stream service.StreamWithCodec) (string, error) {
 	iPath, err := f.pullStream(ctx, stream.Stream)
 	if err != nil {
 		return "", err
@@ -98,7 +105,7 @@ func (f *FFmpegStore) buildOnlyV(ctx context.Context, stream service.StreamWithC
 	return outPath, err
 }
 
-func (f *FFmpegStore) buildVandA(ctx context.Context, vStream service.StreamWithCodec, aStream service.StreamWithCodec) (string, error) {
+func (f *FFmpegStore) BuildVandA(ctx context.Context, vStream service.StreamWithCodec, aStream service.StreamWithCodec) (string, error) {
 	g, ctx := errgroup.WithContext(ctx)
 
 	var (
