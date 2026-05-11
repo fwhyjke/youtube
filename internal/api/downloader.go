@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"io"
 )
 
@@ -18,9 +19,14 @@ type MediaFormat struct {
 	ContentLength int64 `json:"contentLength,string"`
 }
 
-type Downloader interface {
-	VideoFormats(string) ([]MediaFormat, error)
-	AudioFormats(string) ([]MediaFormat, error)
+type StreamWithCodec struct {
+	Stream io.ReadCloser
+	Codec  string
+}
 
-	GetStream(string, MediaFormat) (io.ReadCloser, string, error)
+type Downloader interface {
+	VideoFormats(context.Context, string) ([]MediaFormat, error)
+	AudioFormats(context.Context, string) ([]MediaFormat, error)
+
+	GetStream(context.Context, string, MediaFormat) (StreamWithCodec, error)
 }

@@ -2,7 +2,6 @@ package download
 
 import (
 	"context"
-	"io"
 
 	"github.com/fwhyjke/youtube/internal/api"
 	"github.com/kkdai/youtube/v2"
@@ -18,10 +17,10 @@ func NewClient() *Client {
 	}
 }
 
-func (c Client) AudioFormats(url string) ([]api.MediaFormat, error) {
+func (c Client) AudioFormats(ctx context.Context, url string) ([]api.MediaFormat, error) {
 	aFormats := []api.MediaFormat{}
 
-	meta, err := c.client.GetVideoContext(context.TODO(), url)
+	meta, err := c.client.GetVideoContext(ctx, url)
 	if err != nil {
 		return aFormats, err
 	}
@@ -41,10 +40,10 @@ func (c Client) AudioFormats(url string) ([]api.MediaFormat, error) {
 	return aFormats, err
 }
 
-func (c Client) VideoFormats(url string) ([]api.MediaFormat, error) {
+func (c Client) VideoFormats(ctx context.Context, url string) ([]api.MediaFormat, error) {
 	vFormats := []api.MediaFormat{}
 
-	meta, err := c.client.GetVideoContext(context.TODO(), url)
+	meta, err := c.client.GetVideoContext(ctx, url)
 	if err != nil {
 		return vFormats, err
 	}
@@ -65,16 +64,19 @@ func (c Client) VideoFormats(url string) ([]api.MediaFormat, error) {
 	return vFormats, err
 }
 
-func (c Client) GetStream(url string, format api.MediaFormat) (io.ReadCloser, string, error) {
-	meta, err := c.client.GetVideoContext(context.TODO(), url)
+func (c Client) GetStream(ctx context.Context, url string, format api.MediaFormat) (api.StreamWithCodec, error) {
+	meta, err := c.client.GetVideoContext(ctx, url)
 	if err != nil {
-		return nil, "", err
+		return api.StreamWithCodec{}, err
 	}
 
 	stream, _, err := c.client.GetStream(meta, &meta.Formats.Itag(format.ItagNo)[0])
 	if err != nil {
-		return nil, "", err
+		return api.StreamWithCodec{}, err
 	}
 
-	return stream, format.MimeType, nil
+	return api.StreamWithCodec{
+		Stream: stream,
+		Codec: format.MimeType,
+	}, nil
 }
