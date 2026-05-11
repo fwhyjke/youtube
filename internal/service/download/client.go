@@ -1,9 +1,9 @@
-package download
+package service
 
 import (
 	"context"
 
-	"github.com/fwhyjke/youtube/internal/api"
+	"github.com/fwhyjke/youtube/internal/service"
 	"github.com/kkdai/youtube/v2"
 )
 
@@ -17,8 +17,8 @@ func NewClient() *Client {
 	}
 }
 
-func (c Client) AudioFormats(ctx context.Context, url string) ([]api.MediaFormat, error) {
-	aFormats := []api.MediaFormat{}
+func (c Client) AudioFormats(ctx context.Context, url string) ([]service.MediaFormat, error) {
+	aFormats := []service.MediaFormat{}
 
 	meta, err := c.client.GetVideoContext(ctx, url)
 	if err != nil {
@@ -26,7 +26,7 @@ func (c Client) AudioFormats(ctx context.Context, url string) ([]api.MediaFormat
 	}
 
 	for _, format := range meta.Formats.Type("audio/mp4") {
-		aFormats = append(aFormats, api.MediaFormat{
+		aFormats = append(aFormats, service.MediaFormat{
 			ItagNo:   format.ItagNo,
 			MimeType: format.MimeType,
 
@@ -40,8 +40,8 @@ func (c Client) AudioFormats(ctx context.Context, url string) ([]api.MediaFormat
 	return aFormats, err
 }
 
-func (c Client) VideoFormats(ctx context.Context, url string) ([]api.MediaFormat, error) {
-	vFormats := []api.MediaFormat{}
+func (c Client) VideoFormats(ctx context.Context, url string) ([]service.MediaFormat, error) {
+	vFormats := []service.MediaFormat{}
 
 	meta, err := c.client.GetVideoContext(ctx, url)
 	if err != nil {
@@ -49,7 +49,7 @@ func (c Client) VideoFormats(ctx context.Context, url string) ([]api.MediaFormat
 	}
 
 	for _, format := range meta.Formats.Type("video/mp4") {
-		vFormats = append(vFormats, api.MediaFormat{
+		vFormats = append(vFormats, service.MediaFormat{
 			ItagNo:   format.ItagNo,
 			MimeType: format.MimeType,
 
@@ -64,19 +64,20 @@ func (c Client) VideoFormats(ctx context.Context, url string) ([]api.MediaFormat
 	return vFormats, err
 }
 
-func (c Client) GetStream(ctx context.Context, url string, format api.MediaFormat) (api.StreamWithCodec, error) {
+func (c Client) GetStream(ctx context.Context, url string, formatItag int) (service.StreamWithCodec, error) {
 	meta, err := c.client.GetVideoContext(ctx, url)
 	if err != nil {
-		return api.StreamWithCodec{}, err
+		return service.StreamWithCodec{}, err
 	}
 
-	stream, _, err := c.client.GetStream(meta, &meta.Formats.Itag(format.ItagNo)[0])
+	f := &meta.Formats.Itag(formatItag)[0]
+	stream, _, err := c.client.GetStream(meta, f)
 	if err != nil {
-		return api.StreamWithCodec{}, err
+		return service.StreamWithCodec{}, err
 	}
 
-	return api.StreamWithCodec{
+	return service.StreamWithCodec{
 		Stream: stream,
-		Codec: format.MimeType,
+		Codec:  f.MimeType,
 	}, nil
 }

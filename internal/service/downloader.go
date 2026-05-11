@@ -1,4 +1,4 @@
-package api
+package service
 
 import (
 	"context"
@@ -28,5 +28,5 @@ type Downloader interface {
 	VideoFormats(context.Context, string) ([]MediaFormat, error)
 	AudioFormats(context.Context, string) ([]MediaFormat, error)
 
-	GetStream(context.Context, string, MediaFormat) (StreamWithCodec, error)
+	GetStream(context.Context, string, int) (StreamWithCodec, error)
 }

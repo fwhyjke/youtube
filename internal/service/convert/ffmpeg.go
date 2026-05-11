@@ -1,4 +1,4 @@
-package upload
+package service
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/fwhyjke/youtube/internal/api"
+	"github.com/fwhyjke/youtube/internal/service"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -37,7 +37,7 @@ func (f *FFmpegStore) pullStream(ctx context.Context, stream io.ReadCloser) (str
 	return path, err
 }
 
-func (f *FFmpegStore) buildOnlyA(ctx context.Context, stream api.StreamWithCodec) (string, error) {
+func (f *FFmpegStore) buildOnlyA(ctx context.Context, stream service.StreamWithCodec) (string, error) {
 	iPath, err := f.pullStream(ctx, stream.Stream)
 	if err != nil {
 		return "", err
@@ -62,7 +62,7 @@ func (f *FFmpegStore) buildOnlyA(ctx context.Context, stream api.StreamWithCodec
 	return outPath, err
 }
 
-func (f *FFmpegStore) buildOnlyV(ctx context.Context, stream api.StreamWithCodec) (string, error) {
+func (f *FFmpegStore) buildOnlyV(ctx context.Context, stream service.StreamWithCodec) (string, error) {
 	iPath, err := f.pullStream(ctx, stream.Stream)
 	if err != nil {
 		return "", err
@@ -98,7 +98,7 @@ func (f *FFmpegStore) buildOnlyV(ctx context.Context, stream api.StreamWithCodec
 	return outPath, err
 }
 
-func (f *FFmpegStore) buildVandA(ctx context.Context, vStream api.StreamWithCodec, aStream api.StreamWithCodec) (string, error) {
+func (f *FFmpegStore) buildVandA(ctx context.Context, vStream service.StreamWithCodec, aStream service.StreamWithCodec) (string, error) {
 	g, ctx := errgroup.WithContext(ctx)
 
 	var (
